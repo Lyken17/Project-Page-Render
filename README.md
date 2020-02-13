@@ -13,4 +13,3 @@ Fill necessary information in `info.yaml` and then `python render.py`.
 ## TODO
 
 * `#include` syntax to fold extreme long paragraphs.
-
