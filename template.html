@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+<head>
+  <title> {{ info.title }}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+  <link href="style_extra.css" rel="stylesheet">
+</head>
+
+<body class="nd-docs">
+  <div class="nd-pageheader">
+    <div class="container">
+      <p class="lead" style="font-size:300%;">
+        {{ info.title }}
+        <address>
+          {% for author, info in authors.items() %}
+          <nobr>
+            <a href="{{ info.url }}">{{ author }}</a>
+            <sup>{{ info.affiliation }}</sup>
+            {{ "," if not loop.last }}
+          </nobr>
+          {% endfor %}
+          <br>
+          {% for affiliation in affiliations %}
+          <nobr>{{ affiliation }}{{ "," if not loop.last }}</nobr>
+          {% endfor %}
+        </address>
+      </p>
+    </div>
+  </div> <!-- end nd-pageheader -->
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col text-center">
+        <p>
+          {% for beamer, item in beamers.items() %}
+          <a href="{{ item.url }}" class="d-inline-block p-3 align-top">
+            <img height="{{ item.height }}" width="{{ item.width }}" src="{{ item.img }}" style="border:1px solid"
+              data-nothumb><br>
+            {{ beamer }}
+          </a>
+          {% endfor %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+
+        {% for para in paragraphs %}
+        {% if 'title' in para%}
+        <h2>{{ para.title }}</h2>
+        {% endif%}
+
+        {% if 'content' in para%}
+        <p>{{ para.content | markdown}}</p>
+        {% endif %}
+
+        {% if 'rawhtml' in para%}
+        {{ para.rawhtml }}
+        {% endif%}
+        {% endfor %}
+
+      </div>
+    </div> <!-- row -->
+
+  </div> <!-- container -->
+
+  <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight * 50 + "px";
+        }
+        content.style.height = "550%";
+      });
+    }
+  </script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+      }
+    });
+  </script>
+  
+  <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+</body>
+
+</html>

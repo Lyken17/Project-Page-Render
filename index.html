@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+
+<head>
+  <title> HAT hardware aware transformer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+  <link href="style_extra.css" rel="stylesheet">
+  <!-- <style>
+    .container_2 {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%;
+    }
+
+    .video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .collapsible {
+      background-color: #777;
+      color: white;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .active,
+    .collapsible:hover {
+      background-color: #555;
+    }
+
+    .content {
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+      background-color: #f1f1f1;
+    }
+
+    .paperthumb {
+      float: left;
+      width: 120px;
+      margin: 3px 10px 7px 0;
+    }
+
+    .paperdesc {
+      clear: both;
+    }
+  </style> -->
+</head>
+
+<body class="nd-docs">
+  <div class="nd-pageheader">
+    <div class="container">
+      <p class="lead" style="font-size:300%;">
+        HAT hardware aware transformer
+        <address>
+                    <nobr>
+            <a href="https://lzhu.me">Ligeng Zhu</a>
+            <sup>1</sup>
+            ,
+          </nobr>
+                    <nobr>
+            <a href="http://zhijianliu.com/">Hnarui Wang</a>
+            <sup>1</sup>
+            ,
+          </nobr>
+                    <nobr>
+            <a href="">Zhanghao Wu</a>
+            <sup>2</sup>
+            ,
+          </nobr>
+                    <nobr>
+            <a href="https://songhan.mit.edu">Song Han</a>
+            <sup>1</sup>
+            
+          </nobr>
+                    <br>
+                    <nobr>Massachusetts Institute of Technology,</nobr>
+                    <nobr>Shanghai Jiaotong University</nobr>
+                  </address>
+      </p>
+    </div>
+  </div> <!-- end nd-pageheader -->
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col text-center">
+        <p>
+                    <a href="assets/NeurIPS19_deep_leakage_from_gradients.pdf" class="d-inline-block p-3 align-top">
+            <img height="100" width="78" src="assets/9617-deep-leakage-from-gradients.jpg" style="border:1px solid"
+              data-nothumb><br>
+            NeurIPS 2019 Paper
+          </a>
+                    <a href="https://lzhu.me/assets/posters/19-nips-dlg.pdf" class="d-inline-block p-3 align-top">
+            <img height="100" width="178" src="assets/19-nips-dlg.jpg" style="border:1px solid"
+              data-nothumb><br>
+            NeurIPS 2019 Poster
+          </a>
+                    <a href="https://github.com/mit-han-lab/deep-leakage-from-gradients" class="d-inline-block p-3 align-top">
+            <img height="100" width="148" src="assets/code.png" style="border:1px solid"
+              data-nothumb><br>
+            Code
+          </a>
+                </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+
+                
+        
+                <p align="center">Note: We provide
+  <a href="https://colab.research.google.com/gist/Lyken17/91b81526a8245a028d4f85ccc9191884/deep-leakage-from-gradients.ipynb"
+    target="_parent"><img
+      src="https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667"
+      alt="Open In Colab" data-canonical-src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+  for quick reproduction!
+</p>
+                        
+                <p><p>Exchanging gradients is a widely used method in modern multi-node machine learning system (e.g., distributed training, collaborative learning). For a long time, people believed that gradients are safe to share: i.e., the training data will not be leaked by gradient exchange. However, we show that it is possible to obtain the private training data from the publicly shared gradients. We name this leakage as <strong>Deep Leakage from Gradients</strong> and empirically validate the effectiveness on both computer vision and natural language processing tasks. Experimental results show that our attack is much stronger than previous approaches: the recovery is <em>pixel-wise</em> accurate for images and <em>token-wise</em> matching for texts. We want to raise people's awareness to rethink the gradient's safety. Finally, we discuss several possible strategies to prevent such deep leakage. The most effective defense method is <a href="https://hanlab.mit.edu">gradient pruning.</a>  $$ \max(2 T_{\text{latency}} + T_{\text{sync}} - d \times T_{\text{computation}}, 0) / T_{\text{compute}} $$ $$ \frac{1}{N} \sum_{n=0}^{N-1} \mathbb{E} [ \Vert \nabla f(\overline{w}_{n}) \Vert ^2 ]  = O \left (\frac{\Delta+\sigma^2}{\sqrt{JN}}+ \frac{Jd^2}{N} \right ). $$</p></p>
+        
+                        
+                <p><p align="center">
+    <img src="assets/nips-dlg.jpg" width="80%">
+</p></p>
+        
+                                <h2>Deep Leakage by Gradient Matching</h2>
+        
+                <p><p align="center">
+    <img src="assets/method.jpg" width="80%">
+</p>
+
+<p>The core algorithm is to match the gradients between dummy data and real data. It can be implemented in less than 20 lines in PyTorch!</p></p>
+        
+                <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">deep_leakage_from_gradients</span>(model, origin_grad): 
+    dummy_data <span style="color: #333333">=</span> torch<span style="color: #333333">.</span>randn(origin_data<span style="color: #333333">.</span>size())
+    dummy_label <span style="color: #333333">=</span>  torch<span style="color: #333333">.</span>randn(dummy_label<span style="color: #333333">.</span>size())
+    optimizer <span style="color: #333333">=</span> torch<span style="color: #333333">.</span>optim<span style="color: #333333">.</span>LBFGS([dummy_data, dummy_label] )
+  
+    <span style="color: #008800; font-weight: bold">for</span> iters <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">range</span>(<span style="color: #0000DD; font-weight: bold">300</span>):
+      <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">closure</span>():
+        optimizer<span style="color: #333333">.</span>zero_grad()
+        dummy_pred <span style="color: #333333">=</span> model(dummy_data) 
+        dummy_loss <span style="color: #333333">=</span> criterion(dummy_pred, dummy_label) 
+        dummy_grad <span style="color: #333333">=</span> grad(dummy_loss, model<span style="color: #333333">.</span>parameters(), create_graph<span style="color: #333333">=</span><span style="color: #007020">True</span>)
+  
+        grad_diff <span style="color: #333333">=</span> <span style="color: #007020">sum</span>(((dummy_grad <span style="color: #333333">-</span> origin_grad) <span style="color: #333333">**</span> <span style="color: #0000DD; font-weight: bold">2</span>)<span style="color: #333333">.</span>sum() \
+          <span style="color: #008800; font-weight: bold">for</span> dummy_g, origin_g <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">zip</span>(dummy_grad, origin_grad))
+        
+        grad_diff<span style="color: #333333">.</span>backward()
+        <span style="color: #008800; font-weight: bold">return</span> grad_diff
+      
+      optimizer<span style="color: #333333">.</span>step(closure)
+      
+    <span style="color: #008800; font-weight: bold">return</span>  dummy_data, dummy_label
+  </pre></div>
+                                <h2>Results on Image</h2>
+        
+                <p><p align="center">
+    <img src="assets/demo-crop.gif" width="60%">
+</p></p>
+        
+                                <h2>Results on Language Model</h2>
+        
+                <p><p align="center">
+    <img src="assets/nlp_results.png" width="66%">
+</p></p>
+        
+                                <h2>Introduction Video</h2>
+        
+                <p><div class="container_2" align="center">
+    <iframe src="https://www.youtube.com/embed/kMVvT8cf3Iw" frameborder="0" allowfullscreen class="video"></iframe>
+</div></p>
+        
+                                <h2>Citation</h2>
+        
+        
+                <pre class="highlight"> @inproceedings{zhu2019dlg,
+    title     = {Deep Leakage from Gradients},
+    author    = {Zhu, Ligeng and Liu, Zhijian and and Han, Song},
+    booktitle = {Annual Conference on Neural Information Processing Systems (NeurIPS)},
+    year      = {2019}
+} </pre>
+                        
+                <p><p><strong>Acknowledgments</strong>: We sincerely thank MIT Quest for Intelligence, MIT-IBM Watson AI Lab, Samsung, Facebook and SONY for supporting this research. We also thank John Cohn for valuable discussion.</p></p>
+        
+                
+      </div>
+    </div> <!-- row -->
+
+  </div> <!-- container -->
+
+  <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight * 50 + "px";
+        }
+        content.style.height = "550%";
+      });
+    }
+  </script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+      }
+    });
+  </script>
+  
+  <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+</body>
+
+</html>
