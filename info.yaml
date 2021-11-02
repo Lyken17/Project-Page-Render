@@ -1,124 +1,156 @@
 title: 
-    HAT hardware aware transformer
+    "Delayed Gradient Averaging: Tolerate the Communication Latency for Federated Learning" 
 
 authors:
     Ligeng Zhu: 
         url: https://lzhu.me
         affiliation: 1
-    Hnarui Wang: 
-        url: http://zhijianliu.com/
-        affiliation: 1
-    Zhanghao Wu:
+    Hongzhou Lin: 
+        url: http://www.hongzhoulin.com/
         affiliation: 2
+    Yao Lu:
+        affiliation: 3
+    Yujun Lin: 
+        affiliation: 1
     Song Han: 
         url: https://songhan.mit.edu
         affiliation: 1
 
 affiliations:
     - Massachusetts Institute of Technology
-    - Shanghai Jiaotong University
+    - Amazon
+    - Google
 
 beamers:
-    NeurIPS 2019 Paper:
-        img: assets/9617-deep-leakage-from-gradients.jpg
-        url: assets/NeurIPS19_deep_leakage_from_gradients.pdf
+    Paper:
+        img: assets/paper_preview.jpg
+        url: assets/neurips19_dga.pdf
         width: 78
         height: 100
-    NeurIPS 2019 Poster:
-        img: assets/19-nips-dlg.jpg
-        url: https://lzhu.me/assets/posters/19-nips-dlg.pdf
+    Slides:
+        img: assets/dga_slides.jpg
+        url: assets/dga_slides.pdf
         width: 178
         height: 100
-    Code:
-        img: assets/code.png
-        url: https://github.com/mit-han-lab/deep-leakage-from-gradients
-        width: 148
-        height: 100
+    # Poster:
+    #     img: assets/19-nips-dlg.jpg
+    #     url: https://lzhu.me/assets/posters/19-nips-dlg.pdf
+    #     width: 178
+    #     height: 100
+    # Code:
+    #     img: assets/code.png
+    #     url: https://github.com/mit-han-lab/deep-leakage-from-gradients
+    #     width: 148
+    #     height: 100
 
 paragraphs:
-    - rawhtml: >-
-        <p align="center">Note: We provide
-          <a href="https://colab.research.google.com/gist/Lyken17/91b81526a8245a028d4f85ccc9191884/deep-leakage-from-gradients.ipynb"
-            target="_parent"><img
-              src="https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667"
-              alt="Open In Colab" data-canonical-src="https://colab.research.google.com/assets/colab-badge.svg"></a>
-          for quick reproduction!
-        </p>
+#     - rawhtml: >-
+#         <p align="center">Note: We provide
+#           <a href="https://colab.research.google.com/gist/Lyken17/91b81526a8245a028d4f85ccc9191884/deep-leakage-from-gradients.ipynb"
+#             target="_parent"><img
+#               src="https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667"
+#               alt="Open In Colab" data-canonical-src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+#           for quick reproduction!
+#         </p>
     
     - content: >-
-        Exchanging gradients is a widely used method in modern multi-node machine learning system (e.g., distributed training, collaborative learning). For a long time, people believed that gradients are safe to share: i.e., the training data will not be leaked by gradient exchange. However, we show that it is possible to obtain the private training data from the publicly shared gradients. We name this leakage as **Deep Leakage from Gradients** and empirically validate the effectiveness on both computer vision and natural language processing tasks. Experimental results show that our attack is much stronger than previous approaches: the recovery is _pixel-wise_ accurate for images and _token-wise_ matching for texts. We want to raise people's awareness to rethink the gradient's safety. Finally, we discuss several possible strategies to prevent such deep leakage. The most effective defense method is [gradient pruning.](https://hanlab.mit.edu) 
-        $$ \max(2 T_{\text{latency}} + T_{\text{sync}} - d \times T_{\text{computation}}, 0) / T_{\text{compute}} $$
-        $$ \frac{1}{N} \sum_{n=0}^{N-1} \mathbb{E} [ \Vert \nabla f(\overline{w}_{n}) \Vert ^2 ]  = O \left (\frac{\Delta+\sigma^2}{\sqrt{JN}}+ \frac{Jd^2}{N} \right ). $$
+        Federated Learning is an emerging direction in distributed machine learning that en-ables jointly training a model without sharing the data. Since the data is distributedacross many edge devices through wireless / long-distance connections, federatedlearning suffers from inevitable high communication latency. However, the latencyissues are undermined in the current literature [15] and existing approaches suchas FedAvg [27] become less efficient when the latency increases.  
+        To overcomethe problem, we proposeDelayedGradientAveraging (DGA), which delays theaveraging step to improve efficiency and allows local computation in parallel tocommunication. Wetheoreticallyprove that DGA attains a similar convergencerate as FedAvg, andempiricallyshow that our algorithm can tolerate high networklatency without compromising accuracy. Specifically, we benchmark the trainingspeed on various vision (CIFAR, ImageNet) and language tasks (Shakespeare),with both IID and non-IID partitions, and show DGA can bring 2.55$\times$to 4.07$\times$speedup. Moreover, we built a 16-node Raspberry Pi cluster and show that DGAcan consistently speed up real-world federated learning applications
 
-    - content: >-
-        <p align="center">
-            <img src="assets/nips-dlg.jpg" width="80%">
-        </p>
-
-    - title: Deep Leakage by Gradient Matching
-      content: >-
-        <p align="center">
-            <img src="assets/method.jpg" width="80%">
-        </p>
-        The core algorithm is to match the gradients between dummy data and real data. It can be implemented in less than 20 lines in PyTorch!
-      rawhtml: >-
-        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">deep_leakage_from_gradients</span>(model, origin_grad): 
-            dummy_data <span style="color: #333333">=</span> torch<span style="color: #333333">.</span>randn(origin_data<span style="color: #333333">.</span>size())
-            dummy_label <span style="color: #333333">=</span>  torch<span style="color: #333333">.</span>randn(dummy_label<span style="color: #333333">.</span>size())
-            optimizer <span style="color: #333333">=</span> torch<span style="color: #333333">.</span>optim<span style="color: #333333">.</span>LBFGS([dummy_data, dummy_label] )
-          
-            <span style="color: #008800; font-weight: bold">for</span> iters <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">range</span>(<span style="color: #0000DD; font-weight: bold">300</span>):
-              <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">closure</span>():
-                optimizer<span style="color: #333333">.</span>zero_grad()
-                dummy_pred <span style="color: #333333">=</span> model(dummy_data) 
-                dummy_loss <span style="color: #333333">=</span> criterion(dummy_pred, dummy_label) 
-                dummy_grad <span style="color: #333333">=</span> grad(dummy_loss, model<span style="color: #333333">.</span>parameters(), create_graph<span style="color: #333333">=</span><span style="color: #007020">True</span>)
-          
-                grad_diff <span style="color: #333333">=</span> <span style="color: #007020">sum</span>(((dummy_grad <span style="color: #333333">-</span> origin_grad) <span style="color: #333333">**</span> <span style="color: #0000DD; font-weight: bold">2</span>)<span style="color: #333333">.</span>sum() \
-                  <span style="color: #008800; font-weight: bold">for</span> dummy_g, origin_g <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">zip</span>(dummy_grad, origin_grad))
-                
-                grad_diff<span style="color: #333333">.</span>backward()
-                <span style="color: #008800; font-weight: bold">return</span> grad_diff
-              
-              optimizer<span style="color: #333333">.</span>step(closure)
-              
-            <span style="color: #008800; font-weight: bold">return</span>  dummy_data, dummy_label
-          </pre></div>
-    
-    - title: Results on Image
-      content: >-
-        <p align="center">
-            <img src="assets/demo-crop.gif" width="60%">
-        </p>
-    
-    # - title: Results on Batches Images
+    # - title: Background
     #   content: >-
-    #     <p align="center">
-    #         <img src="assets/out.gif" width="66%">
+    #      <p align="center">
+    #         <img src="assets/dga_method.jpg" width="80%">
     #     </p>
-    
-    - title: Results on Language Model
+    #     The core a
+
+#     - content: >-
+#         <p align="center">
+#             <img src="assets/nips-dlg.jpg" width="80%">
+#         </p>
+
+    - title: Background
       content: >-
         <p align="center">
-            <img src="assets/nlp_results.png" width="66%">
+            <img src="assets/dga_background.png" width="80%">
         </p>
-    
-    - title: Introduction Video
+        The training settings of conventional distributed training v.s. federated learning are very different.
+        High latency cost greatly degrades the FedAvg’s performance, proposing a severe challenge to scale up the training system.
+        We need to design algorithms to deal with the latency issue.
+
+    - title: Algorithm
       content: >-
-        <div class="container_2" align="center">
-            <iframe src="https://www.youtube.com/embed/kMVvT8cf3Iw" frameborder="0" allowfullscreen class="video"></iframe>
-        </div>
+        <p align="center">
+            <img src="assets/dga_algorithm.png" width="80%">
+        </p>
+        The flatten view of our algorithm. The averaging occurs periodically with period K and the delay parameter D naturally shows up indicating the number of gradients between the sending and reception. 
+        The cyan cube in the visualization (a,b) indicates local computation and the yellow cube represents the transmission of the averages. The red bar indicates when the averaging is actually performed. 
+        In DGA, the transmission is in parallel to the computation, which is the main reason why DGA can tolerate high latency.
+
+    - title: Convergence Analysis
+      content: >-
+        * Assumption 1: The loss function $F(w; x,y )$￼is **Lipchitz smooth**
+            $$ \nabla f_{j} (x) - \nabla f_{j} (y) || \le L ||x - y||. \quad \forall x,y \in \mathbb{R}^d $$
+        * Assumption 2: **Bounded gradients and variances**
+            $$ E_{\zeta_{j}} || \nabla F_{j} (w; \zeta_{i}) || ^ 2 \le  G^2, \forall w, \forall j,  $$
+            $$ E_{\zeta_{j}} || \nabla F_{j} (w; \zeta_{j}) - \nabla f_{j} (w) || ^ 2 \le  \sigma^2, \forall w, \forall j. $$
+
+        The convergence rate of DGA is $ O (\frac{\Delta+\sigma^2}{\sqrt{JN}}+ \frac{Jd^2}{N}) $ (details in paper).
+
+
+        When $ D < O(N^{\frac{1}{4}} J^{-\frac{3}{4}}) $￼,  DGA converges as fast as original SGD which is $ O (\frac{\Delta+\sigma^2}{\sqrt{JN}}) $￼. 
+
+    - title: Accuracy Analysis
+      content: >-
+        <p align="center">
+            <img src="assets/dga_acc_table.png" width="60%">
+        </p>
+        Comparison of FedAvg and our DGA’s accuracy on 3 datasets with both i.i.d and noni.i.d partitions. The speedup is measured on latency with 1s latency. 
+        Not only DGA demonstrates consistent training speedup, but also DGA maintains the accuracy, on both i.i.d and non-i.i.d partition.
+
+    - title: Speedup Analysis
+      content: >-
+        <p align="center">
+            <img src="assets/dga_speedup.png" width="60%">
+        </p>
+        _Left_: Our Raspberry Pi farm. Experiments are conducted on two racks.
+        _Right_: The speedup comparison between FedAvg and DGA~on Raspberry Pi cluster. 
+        On both vision and language tasks, DGA demonstrate consistent improvement over FedAvg.
+
+#     - title: Results on Image
+#       content: >-
+#         <p align="center">
+#             <img src="assets/demo-crop.gif" width="60%">
+#         </p>
+    
+#     # - title: Results on Batches Images
+#     #   content: >-
+#     #     <p align="center">
+#     #         <img src="assets/out.gif" width="66%">
+#     #     </p>
+    
+#     - title: Results on Language Model
+#       content: >-
+#         <p align="center">
+#             <img src="assets/nlp_results.png" width="66%">
+#         </p>
+    
+#     - title: Introduction Video
+#       content: >-
+#         <div class="container_2" align="center">
+#             <iframe src="https://www.youtube.com/embed/kMVvT8cf3Iw" frameborder="0" allowfullscreen class="video"></iframe>
+#         </div>
 
     - title: Citation
       rawhtml: >-
         <pre class="highlight">
-        @inproceedings{zhu2019dlg,
-            title     = {Deep Leakage from Gradients},
-            author    = {Zhu, Ligeng and Liu, Zhijian and and Han, Song},
+        @inproceedings{zhu2021dga,
+            title     = {Delayed Gradient Averaging: Tolerate the Communication Latency in Federated Learning},
+            author    = {Zhu, Ligeng and Lin, Hongzhou and Lu, Yao and Lin, Yujun and and Han, Song},
             booktitle = {Annual Conference on Neural Information Processing Systems (NeurIPS)},
-            year      = {2019}
+            year      = {2021}
         }
         </pre>
     
     - content: >-
-        **Acknowledgments**: We sincerely thank MIT Quest for Intelligence, MIT-IBM Watson AI Lab, Samsung, Facebook and SONY for supporting this research. We also thank John Cohn for valuable discussion.
+        **Acknowledgments**: We thank MIT-IBM Watson AI Lab, Samsung, Woodside Energy, and NSF CAREER Award #1943349 for supporting this research. Hongzhou Lin acknowledges that the work is done prior to joining Amazon. Yao Lu acknowledges that the work is done prior to joining Google.
